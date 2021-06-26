@@ -1,12 +1,11 @@
 import React, { Component, useEffect, useState } from "react";
-import store from "../store";
 import clsx from "clsx";
 import { withStyles } from "@material-ui/core";
 import {
     Button, IconButton,
     Card, CardHeader, CardContent, CardActions, Collapse,
     List, ListItem, ListItemText, ListItemAvatar,
-    Avatar, Divider
+    Avatar, Divider, Badge, Menu, MenuItem
   } from "@material-ui/core";
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
@@ -14,6 +13,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import WorkIcon from '@material-ui/icons/Work';
 import EventIcon from '@material-ui/icons/Event';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import jhahn from "../jhahn.jpg";
+import jhjeon from "../jhjeon.jpg";
+import ykpark from "../ykpark.jpg";
 
 const styles = theme => ({
   root:{
@@ -46,8 +48,8 @@ const styles = theme => ({
 
 const Content = (props) => {
   const {classes} = props;
-  const [user, setUser] = useState('JH');
   const [cardExpand, setCardExpand] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const id = props.id;
   const handleJoin = () => {
     alert('Joined :)');
@@ -64,13 +66,34 @@ const Content = (props) => {
   const handleTest = () => {
     alert('TEST');
   };
+  const handleOptionMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+  const handleOptionMenuClose = () => {
+    setAnchorEl(null);
+  }
+  const getUserIconAvatar = (name) => {
+    switch(name){
+      case 'JHyun':
+        return <Badge badgeContent='JHyun' color="primary"><Avatar src={jhahn}/></Badge>;
+      case 'JA':
+        return <Badge badgeContent='JHyun' color="primary"><Avatar src={jhahn}/></Badge>;
+      case 'JJ':
+        return <Badge badgeContent='Jihee' color="secondary"><Avatar src={jhjeon}/></Badge>;
+      case 'YP':
+        return <Badge badgeContent='YongQ' color="primary"><Avatar src={ykpark}/></Badge>;
+      default:
+        return <Avatar/>;
+    }
+  };
   
   return(
     <Card className={classes.card} elevation={1}>
       <CardHeader
         title={props.title}
         action={
-          <div>
+          <div style={{display:'flex'}}>
+            {getUserIconAvatar(props.author)}
             <IconButton
               className={clsx(classes.expand, {
                 [classes.expandOpen]: cardExpand,
@@ -78,8 +101,17 @@ const Content = (props) => {
               onClick={handleExpand}
             ><ExpandMoreIcon/></IconButton>
             <IconButton
-              onClick={handleDelete}
+              onClick={handleOptionMenuOpen}
             ><MoreVertIcon/></IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleOptionMenuClose}
+            >
+              <MenuItem>Edit</MenuItem>
+              <MenuItem onClick={()=>handleDelete()}>Delete</MenuItem>
+            </Menu>
           </div>
         }
       />

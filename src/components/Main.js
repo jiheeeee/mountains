@@ -62,7 +62,7 @@ const Main = (props) => {
       type:'addcontent',
       todoList:{
         id: idx,
-        author: 'JHyun',//TODO:
+        author: store.getState().user,
         title: titletmp,
         description: desctmp,
         due: duetmp,
@@ -74,10 +74,23 @@ const Main = (props) => {
     setOpenmodal(false);
   };
   const handleDelete = (id) => {
-    alert('delete '+id);
+    store.dispatch({
+      type:'deletecontent',
+      id:{
+        id:id,
+      },
+    });
+    axios
+      .get(baseUrl+'/api/todolist/readdb')
+      .then((rspn)=>{
+        console.log(rspn.data);
+        store.dispatch({
+          type:'initializecontent',
+          todoList: rspn.data,
+        });
+        idx = rspn.data.length;
+      });
   };
-  const Test = () => {
-  }
   
   return(
     <main>
@@ -133,7 +146,6 @@ const Main = (props) => {
             />);
         })}
       </Container>
-      <Fab color="secondary" onClick={Test}>Test</Fab>
       <Fab
         className={classes.fab}
         color="primary"

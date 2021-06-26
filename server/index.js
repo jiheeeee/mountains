@@ -34,6 +34,15 @@ app.post("/api/todolist/insert", (req,res)=>{
         res.send(err);
     });
 });
+
+app.post("/api/todolist/delete", (req,res)=>{
+    console.log(req.body);
+    const sqlQuery = "DELETE FROM todolistdb.todolist WHERE id="+req.body.id+";"
+    console.log(sqlQuery);
+    connection.query(sqlQuery, (err,result)=>{
+        res.send(result);
+    })
+});
     
 app.listen(PORT, ()=>{
     console.log(`running on port ${PORT}`)
