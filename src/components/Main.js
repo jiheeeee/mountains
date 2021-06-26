@@ -1,4 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
+import axios from 'axios';
 import Content from "./Content";
 import store from '../store';
 import { withStyles } from "@material-ui/core";
@@ -31,8 +32,19 @@ const Main = (props) => {
   const [titletmp, setTitletmp] = useState('');
   const [desctmp, setDesctmp] = useState('');
   const [duetmp, setDuetmp] = useState('');
-
+  
+  let baseUrl = "http://localhost:8000"
   useEffect(() => {
+    axios
+      .get(baseUrl+'/api/todolist/readdb')
+      .then((rspn)=>{
+        console.log(rspn.data);
+        store.dispatch({
+          type:'initializecontent',
+          todoList: rspn.data,
+        });
+        idx = rspn.data.length;
+      });
     store.subscribe(()=>{
       const todoListfromStore = store.getState().todoList;
       for(let i=0; i<todoListfromStore.length; i++){
@@ -50,8 +62,9 @@ const Main = (props) => {
       type:'addcontent',
       todoList:{
         id: idx,
+        author: 'JHyun',//TODO:
         title: titletmp,
-        desc: desctmp,
+        description: desctmp,
         due: duetmp,
       },
     });
@@ -115,7 +128,7 @@ const Main = (props) => {
         {todoList.map(e=>{
           return(
             <Content
-              id={e.id} title={e.title} desc={e.desc} due={e.due}
+              id={e.id} author={e.author} title={e.title} description={e.description} due={e.due}
               delete={handleDelete}
             />);
         })}

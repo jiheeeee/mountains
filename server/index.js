@@ -18,15 +18,20 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/", (req,res)=>{
-    res.send("Hello World!");
+app.get("/api/todolist/readdb", (req,res)=>{
+    const sqlQuery = "SELECT * FROM todolistdb.todolist;"
+    console.log(sqlQuery);
+    connection.query(sqlQuery, (err,result)=>{
+        res.send(result);
+    })
 });
 
-app.get("/send", (req,res)=>{
-    //TODO: post로 변경
-    const sqlQuery = "INSERT INTO testtable (name,phone,age) VALUES ('안재현', '01050453813', 30)";
+app.post("/api/todolist/insert", (req,res)=>{
+    const sqlQuery = "INSERT INTO todolistdb.todolist (id, author, title, description, due, participants)"+
+                    " VALUES ("+req.body.id+",'"+req.body.author+"','"+req.body.title+"','"+req.body.description+"','"+req.body.due+"','안재현');"
+    console.log(sqlQuery);
     connection.query(sqlQuery, (err,result)=>{
-        res.send('success!');
+        res.send(err);
     });
 });
     

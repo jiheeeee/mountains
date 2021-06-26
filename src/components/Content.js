@@ -48,16 +48,6 @@ const Content = (props) => {
   const {classes} = props;
   const [user, setUser] = useState('JH');
   const [cardExpand, setCardExpand] = useState(false);
-
-  useEffect(() => { 
-    // store.subscribe(()=>{
-    //   setTodoContent({
-    //     title: store.getState().title,
-    //     desc: store.getState().desc,
-    //     due: store.getState().due,
-    //   });
-    // })
-  }, []);
   const id = props.id;
   const handleJoin = () => {
     alert('Joined :)');
@@ -102,7 +92,7 @@ const Content = (props) => {
                   <WorkIcon/>
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={props.desc}/>
+              <ListItemText primary={props.description}/>
             </ListItem>
             <Divider variant="inset" component="li" />
             <ListItem>
