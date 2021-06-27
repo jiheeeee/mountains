@@ -36,6 +36,7 @@ app.post("/api/todolist/insert", (req,res)=>{
 });
 
 app.post("/api/todolist/delete", (req,res)=>{
+    console.log('시작');
     console.log(req.body);
     const sqlQuery = "DELETE FROM todolistdb.todolist WHERE id="+req.body.id+";"
     console.log(sqlQuery);

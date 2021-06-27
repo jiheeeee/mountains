@@ -12,6 +12,7 @@ import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import WorkIcon from '@material-ui/icons/Work';
 import EventIcon from '@material-ui/icons/Event';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import jhahn from "../jhahn.jpg";
 import jhjeon from "../jhjeon.jpg";
@@ -52,10 +53,10 @@ const Content = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const id = props.id;
   const handleJoin = () => {
-    alert('Joined :)');
+    props.join();
   };
   const handleLeave = () => {
-    alert('Leaved :(');
+    props.leave();
   };
   const handleExpand = () => {
     setCardExpand(!cardExpand);
@@ -74,14 +75,24 @@ const Content = (props) => {
   }
   const getUserIconAvatar = (name) => {
     switch(name){
-      case 'JHyun':
-        return <Badge badgeContent='JHyun' color="primary"><Avatar src={jhahn}/></Badge>;
       case 'JA':
         return <Badge badgeContent='JHyun' color="primary"><Avatar src={jhahn}/></Badge>;
       case 'JJ':
         return <Badge badgeContent='Jihee' color="secondary"><Avatar src={jhjeon}/></Badge>;
       case 'YP':
         return <Badge badgeContent='YongQ' color="primary"><Avatar src={ykpark}/></Badge>;
+      default:
+        return <Avatar/>;
+    }
+  };
+  const getParticipantIconAvatar = (name) => {
+    switch(name){
+      case 'JA':
+        return <Badge badgeContent={<FavoriteIcon fontSize="inherit"/>} color="secondary"><Avatar src={jhahn} className={classes.smallavatar}/></Badge>;
+      case 'JJ':
+        return <Badge badgeContent={<FavoriteIcon fontSize="inherit"/>} color="secondary"><Avatar src={jhjeon} className={classes.smallavatar}/></Badge>;
+      case 'YP':
+        return <Badge badgeContent={<FavoriteIcon fontSize="inherit"/>} color="secondary"><Avatar src={ykpark} className={classes.smallavatar}/></Badge>;
       default:
         return <Avatar/>;
     }
@@ -139,6 +150,7 @@ const Content = (props) => {
         </CardContent>
       </Collapse>
       <CardActions style={{justifyContent:'flex-end'}}>
+        {getParticipantIconAvatar(props.author)}
         <Button
           size="small"
           variant="outlined"

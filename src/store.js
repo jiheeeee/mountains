@@ -1,8 +1,6 @@
 import {createStore} from 'redux';
-import axios from 'axios';
 
 export default createStore(function(state,action){
-  let baseUrl = "http://localhost:8000"
   if(state === undefined){
     return {
       user:'',
@@ -21,23 +19,6 @@ export default createStore(function(state,action){
           todoList: [...state.todoList, action.todoList[i]]
         };
       }
-      return state;
-    case 'addcontent':
-      axios
-        .post(baseUrl+'/api/todolist/insert', action.todoList)
-        .then((rspn)=>{
-          console.log(rspn);
-        });
-      return {
-        ...state,
-        todoList: [...state.todoList, action.todoList]
-      };
-    case 'deletecontent':
-      axios
-        .post(baseUrl+'/api/todolist/delete', action.id)
-        .then((rspn)=>{
-          console.log(rspn);
-        })
       return state;
   }
   return state;
