@@ -32,8 +32,9 @@ const Main = (props) => {
   const [todoList, setTodoList] = useState([]);
   const [titletmp, setTitletmp] = useState('');
   const [desctmp, setDesctmp] = useState('');
-  const [duetmp, setDuetmp] = useState('');
+  
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [duetmp, setDuetmp] = useState(selectedDate.getFullYear()+'-'+(selectedDate.getMonth()+1)+'-'+selectedDate.getDate());
   
   let baseUrl = "http://localhost:8000"
   useEffect(() => {
@@ -66,33 +67,31 @@ const Main = (props) => {
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    setDuetmp(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
   };
   const handleConfirm = () => {
     setOpenmodal(false);
-    axios
-      .post(
-        baseUrl+'/api/todolist/insert',
-        {
-          id: idx,
-          author: store.getState().user,
-          title: titletmp,
-          description: desctmp,
-          due: duetmp,
-        })
-      .then(()=>{
-        resyncDB();
-      });
+    axios.post(
+      baseUrl+'/api/todolist/insert',
+      {
+        id: idx,
+        author: store.getState().user,
+        title: titletmp,
+        description: desctmp,
+        due: duetmp,
+      }
+    ).then(()=>{
+      resyncDB();
+    });
   };
   const handleCancel = () => {
     setOpenmodal(false);
   };
   const handleDelete = (id) => {
-    axios
-      .post(baseUrl+'/api/todolist/delete', {id:id})
-      .then(()=>{
+    axios.post(
+      baseUrl+'/api/todolist/delete', {id:id}
+    ).then(()=>{
         resyncDB();
-      });
+    });
   };
   const handleJoin = () => {
     alert('Joined :)');
@@ -121,6 +120,7 @@ const Main = (props) => {
             />
             <TextField
               id="descinput" label="Description" fullWidth
+              multiline rows={2}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -131,19 +131,18 @@ const Main = (props) => {
               onChange={(e)=>setDesctmp(e.target.value)}
             />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Grid container justify="space-around">
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-              </Grid>
+              <KeyboardDatePicker
+                label="Due Day"
+                disableToolbar
+                variant="inline"
+                format="yyyy / MM / dd"
+                margin="normal"
+                value={selectedDate}
+                onChange={handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
             </MuiPickersUtilsProvider>
           </DialogContent>
           <DialogActions>
@@ -154,7 +153,8 @@ const Main = (props) => {
         {todoList.map(e=>{
           return(
             <Content
-              id={e.id} author={e.author} title={e.title} description={e.description} due={e.due}
+              id={e.id} author={e.author} title={e.title}
+              description={e.description} due={e.due} participants={e.participants}
               delete={handleDelete} join={handleJoin} leave={handleLeave}
             />);
         })}

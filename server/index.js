@@ -9,8 +9,9 @@ const cors = require('cors');
 const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "Blueshift26!",
-    database: "testdb"
+    password: "H/KMC123",
+    database: "todolistdb",
+    multipleStatements: true
 });
 connection.connect();
 
@@ -23,26 +24,33 @@ app.get("/api/todolist/readdb", (req,res)=>{
     console.log(sqlQuery);
     connection.query(sqlQuery, (err,result)=>{
         res.send(result);
+        console.log("*err: "+err);
+        console.log("*result: "+result);
     })
 });
 
 app.post("/api/todolist/insert", (req,res)=>{
-    const sqlQuery = "INSERT INTO todolistdb.todolist (id, author, title, description, due, participants)"+
-                    " VALUES ("+req.body.id+",'"+req.body.author+"','"+req.body.title+"','"+req.body.description+"','"+req.body.due+"','안재현');"
+    let sqlQuery = "INSERT INTO todolistdb.todolist (id, author, title, description, due, participants)"+
+                    " VALUES ('"+req.body.id+"','"+req.body.author+"','"+req.body.title+"','"+req.body.description+"','"+req.body.due+"','');"
     console.log(sqlQuery);
     connection.query(sqlQuery, (err,result)=>{
-        res.send(err);
+        res.send(result);
+        console.log("*err: "+err);
+        console.log("*result: "+result);
     });
 });
 
 app.post("/api/todolist/delete", (req,res)=>{
-    console.log('시작');
-    console.log(req.body);
-    const sqlQuery = "DELETE FROM todolistdb.todolist WHERE id="+req.body.id+";"
+    /* 1) DELETE */
+    /* 2) id Rearrange */
+    let sqlQuery = "DELETE FROM todolistdb.todolist WHERE id="+req.body.id+";"
+                    +"SET @CNT=-1;" + "UPDATE todolist SET todolist.id=@CNT:=@CNT+1;";
     console.log(sqlQuery);
     connection.query(sqlQuery, (err,result)=>{
         res.send(result);
-    })
+        console.log("*err: "+err);
+        console.log("*result: "+result);
+    });
 });
     
 app.listen(PORT, ()=>{

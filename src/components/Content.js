@@ -94,7 +94,7 @@ const Content = (props) => {
       case 'YP':
         return <Badge badgeContent={<FavoriteIcon fontSize="inherit"/>} color="secondary"><Avatar src={ykpark} className={classes.smallavatar}/></Badge>;
       default:
-        return <Avatar/>;
+        return;
     }
   };
   
@@ -150,7 +150,7 @@ const Content = (props) => {
         </CardContent>
       </Collapse>
       <CardActions style={{justifyContent:'flex-end'}}>
-        {getParticipantIconAvatar(props.author)}
+        {getParticipantIconAvatar(props.participants)}
         <Button
           size="small"
           variant="outlined"
