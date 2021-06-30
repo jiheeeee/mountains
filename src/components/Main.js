@@ -90,14 +90,28 @@ const Main = (props) => {
     axios.post(
       baseUrl+'/api/todolist/delete', {id:id}
     ).then(()=>{
-        resyncDB();
+      resyncDB();
     });
   };
-  const handleJoin = () => {
-    alert('Joined :)');
+  const handleJoin = (id) => {
+    axios.get(
+      baseUrl+'/api/todolist/getparticipant'
+    ).then((rspn)=>{
+      if(!rspn.data[id].participants.includes(store.getState().user)){
+        axios.post(
+          baseUrl+'/api/todolist/joinparticipant', {user:store.getState().user, id:id}
+        ).then(()=>{
+          resyncDB();
+        });
+      }
+    });
   };
-  const handleLeave = () => {
-    alert('Leaved :(');
+  const handleLeave = (id) => {
+    axios.post(
+      baseUrl+'/api/todolist/leaveparticipant', {id:id}
+    ).then(()=>{
+      resyncDB();
+    })
   };
   
   return(

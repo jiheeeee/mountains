@@ -52,6 +52,26 @@ app.post("/api/todolist/delete", (req,res)=>{
         console.log("*result: "+result);
     });
 });
+
+app.get("/api/todolist/getparticipant", (req,res)=>{
+    let sqlQuery = "SELECT participants from todolistdb.todolist;"
+    console.log(sqlQuery);
+    connection.query(sqlQuery, (err, result)=>{
+        res.send(result);
+        console.log("*err: "+err);
+        console.log("*results: "+result[1].participants);
+    });
+});
+
+app.post("/api/todolist/joinparticipant", (req,res)=>{
+    let sqlQuery = "UPDATE todolist SET participants = '" + req.body.user + ";' WHERE id = " + req.body.id + ";"
+    console.log(sqlQuery);
+    connection.query(sqlQuery, (err,result)=>{
+        res.send(result);
+        console.log("*err: "+err);
+        console.log("*results: "+result);
+    });
+});
     
 app.listen(PORT, ()=>{
     console.log(`running on port ${PORT}`)

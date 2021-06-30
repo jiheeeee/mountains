@@ -52,11 +52,22 @@ const Content = (props) => {
   const [cardExpand, setCardExpand] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const id = props.id;
+  var participants = [];
+  useEffect(() => {
+    var participantsArray = props.participants.split(';');
+    for(let i=0; i<participantsArray.length-1; i++){
+      participants = [...participants, participantsArray[i]];
+    }
+    participants.map(e=>{
+      console.log(e);
+    });
+  }, []);
+
   const handleJoin = () => {
-    props.join();
+    props.join(id);
   };
   const handleLeave = () => {
-    props.leave();
+    props.leave(id);
   };
   const handleExpand = () => {
     setCardExpand(!cardExpand);
@@ -94,7 +105,7 @@ const Content = (props) => {
       case 'YP':
         return <Badge badgeContent={<FavoriteIcon fontSize="inherit"/>} color="secondary"><Avatar src={ykpark} className={classes.smallavatar}/></Badge>;
       default:
-        return;
+        return <Avatar/>;
     }
   };
   
@@ -150,7 +161,9 @@ const Content = (props) => {
         </CardContent>
       </Collapse>
       <CardActions style={{justifyContent:'flex-end'}}>
-        {getParticipantIconAvatar(props.participants)}
+        {participants.map(e=>{
+          return(getParticipantIconAvatar(e));
+        })}
         <Button
           size="small"
           variant="outlined"
