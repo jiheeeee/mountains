@@ -12,7 +12,7 @@ export default createStore(function(state,action){
       state.user = action.user;
       return state;
     case 'initializecontent':
-      state = {todoList:[]};
+      state.todoList = [];
       for(var i=0; i<action.todoList.length; i++){
         state = {
           ...state,
