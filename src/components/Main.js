@@ -99,7 +99,8 @@ const Main = (props) => {
     ).then((rspn)=>{
       if(!rspn.data[id].participants.includes(store.getState().user)){
         axios.post(
-          baseUrl+'/api/todolist/joinparticipant', {user:store.getState().user, id:id}
+          baseUrl+'/api/todolist/updateparticipant',
+          {user:rspn.data[id].participants+store.getState().user+";", id:id}
         ).then(()=>{
           resyncDB();
         });
@@ -107,11 +108,18 @@ const Main = (props) => {
     });
   };
   const handleLeave = (id) => {
-    axios.post(
-      baseUrl+'/api/todolist/leaveparticipant', {id:id}
-    ).then(()=>{
-      resyncDB();
-    })
+    axios.get(
+      baseUrl+'/api/todolist/getparticipant'
+    ).then((rspn)=>{
+      if(rspn.data[id].participants.includes(store.getState().user)){
+        axios.post(
+          baseUrl+'/api/todolist/updateparticipant',
+          {user:rspn.data[id].participants.replace(store.getState().user+';',''), id:id}
+        ).then(()=>{
+          resyncDB();
+        });
+      }
+    });
   };
   
   return(

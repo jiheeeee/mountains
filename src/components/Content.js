@@ -53,14 +53,11 @@ const Content = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const id = props.id;
   var participants = [];
+  var participantsArray = props.participants.split(';');
+  for(let i=0; i<participantsArray.length-1; i++){
+    participants = [...participants, participantsArray[i]];
+  }
   useEffect(() => {
-    var participantsArray = props.participants.split(';');
-    for(let i=0; i<participantsArray.length-1; i++){
-      participants = [...participants, participantsArray[i]];
-    }
-    participants.map(e=>{
-      console.log(e);
-    });
   }, []);
 
   const handleJoin = () => {
@@ -161,6 +158,7 @@ const Content = (props) => {
         </CardContent>
       </Collapse>
       <CardActions style={{justifyContent:'flex-end'}}>
+        {console.log(id)}
         {participants.map(e=>{
           return(getParticipantIconAvatar(e));
         })}
