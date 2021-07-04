@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { withStyles } from "@material-ui/core";
 import {
-    Button, IconButton,
+    Button, IconButton, Chip,
     Card, CardHeader, CardContent, CardActions, Collapse,
     List, ListItem, ListItemText, ListItemAvatar,
     Avatar, Divider, Badge, Menu, MenuItem
@@ -57,23 +57,13 @@ const Content = (props) => {
   for(let i=0; i<participantsArray.length-1; i++){
     participants = [...participants, participantsArray[i]];
   }
-  useEffect(() => {
-  }, []);
 
-  const handleJoin = () => {
-    props.join(id);
-  };
-  const handleLeave = () => {
-    props.leave(id);
-  };
+  const handleJoin = () => {props.join(id);};
+  const handleLeave = () => {props.leave(id);};
+  const handleEdit = () =>{props.edit(id);};
+  const handleDelete = () =>{props.delete(id);};
   const handleExpand = () => {
     setCardExpand(!cardExpand);
-  };
-  const handleEdit = () =>{
-    props.edit(id);
-  };
-  const handleDelete = () =>{
-    props.delete(id);
   };
   const handleOptionMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -105,11 +95,35 @@ const Content = (props) => {
         return <Avatar/>;
     }
   };
+  const getDDay = (due) => {
+    const today = new Date();
+    const dueDate = new Date(due);
+    const distance = dueDate.getTime()-today.getTime();
+    const dday = Math.floor(distance/(1000*60*60*24))*(-1);
+    return (dday>0) ? "D+"+dday : "D"+dday;
+  };
+  const colorOverdue = (due) => {
+    const today = new Date();
+    const dueDate = new Date(due);
+    const distance = dueDate.getTime()-today.getTime();
+    const dday = Math.floor(distance/(1000*60*60*24))*(-1);
+    return (dday<0) ? "primary" : "secondary";
+  }
   
   return(
     <Card className={classes.card} elevation={1}>
       <CardHeader
-        title={props.title}
+        title={
+          <div style={{display:'flex', alignItems:'center'}}>
+            <Chip
+              style={{marginRight:'10px'}}
+              variant="outlined" size="small"
+              color={colorOverdue(props.due)}
+              label={getDDay(props.due)}
+            />
+            {props.title}
+          </div>
+        }
         action={
           <div style={{display:'flex'}}>
             {getUserIconAvatar(props.author)}

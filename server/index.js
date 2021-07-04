@@ -20,7 +20,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/api/todolist/readdb", (req,res)=>{
-    const sqlQuery = "SELECT * FROM todolistdb.todolist;"
+    const sqlQuery = "SELECT * FROM todolistdb.todolist ORDER BY due;"
     console.log(sqlQuery);
     connection.query(sqlQuery, (err,result)=>{
         res.send(result);

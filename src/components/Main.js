@@ -116,11 +116,14 @@ const Main = (props) => {
     setSnackbarContent('Modified!');
   };
   const handleEdit = (id) => {
-    if(todoList[id] !== undefined){
-      setIdtmp(id);
-      setTitletmp(todoList[id].title);
-      setDesctmp(todoList[id].description);
-      setDuetmp(todoList[id].due.replace('. ','-').replace('. ','-').replace('.',''));
+    for(let i=0; i<todoList.length; i++){
+      if(todoList[i].id === id){
+        setIdtmp(todoList[i].id);
+        setTitletmp(todoList[i].title);
+        setDesctmp(todoList[i].description);
+        setDuetmp(todoList[i].due.replace('. ','-').replace('. ','-').replace('.',''));
+        break;
+      }
     }
     setOpenEditModal(true);
   };
