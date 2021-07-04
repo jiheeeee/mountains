@@ -3,7 +3,7 @@ import axios from 'axios';
 import Content from "./Content";
 import store from '../store';
 import {
-  withStyles, Container, Button, InputAdornment , Grid, TextField,
+  withStyles, Container, Button, InputAdornment, TextField,
   Fab, Dialog, DialogActions, DialogContent, DialogTitle,
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
@@ -23,16 +23,20 @@ const styles = theme => ({
   fab:{
     position:"fixed", bottom:"3rem", right:"3rem"
   },
+  textField:{
+    marginBottom: "30px",
+  },
 });
 let idx = 0;
 
 const Main = (props) => {
   const {classes} = props;
-  const [openmodal, setOpenmodal] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [todoList, setTodoList] = useState([]);
+  const [idtmp, setIdtmp] = useState('');
   const [titletmp, setTitletmp] = useState('');
   const [desctmp, setDesctmp] = useState('');
-  
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [duetmp, setDuetmp] = useState(selectedDate.getFullYear()+'-'+(selectedDate.getMonth()+1)+'-'+selectedDate.getDate());
   
@@ -63,13 +67,14 @@ const Main = (props) => {
       });
   }
   const handleWriteTodoList = () => {
-    setOpenmodal(true);
+    setOpenCreateModal(true);
   };
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setDuetmp(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
   };
-  const handleConfirm = () => {
-    setOpenmodal(false);
+  const handleCreateConfirm = () => {
+    setOpenCreateModal(false);
     axios.post(
       baseUrl+'/api/todolist/insert',
       {
@@ -83,8 +88,29 @@ const Main = (props) => {
       resyncDB();
     });
   };
-  const handleCancel = () => {
-    setOpenmodal(false);
+  const handleEditConfirm = (id) => {
+    setOpenEditModal(false);
+    axios.post(
+      baseUrl+'/api/todolist/edit',
+      {
+        id: id,
+        author: store.getState().user,
+        title: titletmp,
+        description: desctmp,
+        due: duetmp,
+      }
+    ).then(()=>{
+      resyncDB();
+    });
+  };
+  const handleEdit = (id) => {
+    if(todoList[id] !== undefined){
+      setIdtmp(id);
+      setTitletmp(todoList[id].title);
+      setDesctmp(todoList[id].description);
+      setDuetmp(todoList[id].due.replace('. ','-').replace('. ','-').replace('.',''));
+    }
+    setOpenEditModal(true);
   };
   const handleDelete = (id) => {
     axios.post(
@@ -126,11 +152,20 @@ const Main = (props) => {
     <main>
       <div className={classes.appBarSpacer}/>
       <Container>
-        <Dialog open={openmodal} aria-labelledby="dialog-title">
+      {todoList.map(e=>{
+          return(
+            <Content
+              id={e.id} author={e.author} title={e.title}
+              description={e.description} due={e.due} participants={e.participants}
+              edit={handleEdit} delete={handleDelete} join={handleJoin} leave={handleLeave}
+            />);
+        })}
+        <Dialog open={openCreateModal} aria-labelledby="dialog-title">
           <DialogTitle id="dialog-title">할 일이 태산</DialogTitle>
           <DialogContent>
             <TextField
               id="titleinput" label="Title" fullWidth
+              className={classes.textField}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -142,6 +177,7 @@ const Main = (props) => {
             />
             <TextField
               id="descinput" label="Description" fullWidth
+              className={classes.textField}
               multiline rows={2}
               InputProps={{
                 startAdornment: (
@@ -168,18 +204,60 @@ const Main = (props) => {
             </MuiPickersUtilsProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleConfirm} color="primary">Add</Button>
-            <Button onClick={handleCancel} color="primary">Cancel</Button>
+            <Button onClick={handleCreateConfirm} color="primary">Add</Button>
+            <Button onClick={()=>{setOpenCreateModal(false)}} color="primary">Cancel</Button>
           </DialogActions>
         </Dialog>
-        {todoList.map(e=>{
-          return(
-            <Content
-              id={e.id} author={e.author} title={e.title}
-              description={e.description} due={e.due} participants={e.participants}
-              delete={handleDelete} join={handleJoin} leave={handleLeave}
-            />);
-        })}
+        <Dialog open={openEditModal} aria-labelledby="dialog-title">
+          <DialogTitle id="dialog-title">할 일이 태산</DialogTitle>
+          <DialogContent>
+            <TextField
+              id="titleinput" label="Title" fullWidth
+              className={classes.textField}
+              defaultValue={titletmp}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EditIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e)=>setTitletmp(e.target.value)}
+            />
+            <TextField
+              id="descinput" label="Description" fullWidth
+              className={classes.textField}
+              defaultValue={desctmp}
+              multiline rows={2}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EditIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e)=>setDesctmp(e.target.value)}
+            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                label="Due Day"
+                disableToolbar
+                variant="inline"
+                format="yyyy / MM / dd"
+                margin="normal"
+                value={selectedDate}
+                onChange={handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>{handleEditConfirm(idtmp)}} color="primary">Edit</Button>
+            <Button onClick={()=>{setOpenEditModal(false)}} color="primary">Cancel</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
       <Fab
         className={classes.fab}

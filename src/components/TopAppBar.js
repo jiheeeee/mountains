@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import store from '../store';
 import { withStyles } from "@material-ui/core";
-import { createMuiTheme } from '@material-ui/core/styles';
 import {
   Container, AppBar, Toolbar, Typography, Button, IconButton,
   Avatar, Menu, MenuItem, Snackbar, Slide
@@ -11,7 +10,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import jhahn from "../jhahn.jpg";
 import jhjeon from "../jhjeon.jpg";
 import ykpark from "../ykpark.jpg";
-import { GpsFixed } from "@material-ui/icons";
 
 const styles = theme => ({
   root:{
@@ -87,7 +85,7 @@ const TopAppBar = (props) => {
   }
   
   return(
-    <Container disableGutters="true">
+    <Container disableGutters={true}>
       <AppBar position="fixed">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">

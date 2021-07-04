@@ -9,7 +9,7 @@ const cors = require('cors');
 const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "H/KMC123",
+    password: "Blueshift26!",
     database: "todolistdb",
     multipleStatements: true
 });
@@ -39,6 +39,21 @@ app.post("/api/todolist/insert", (req,res)=>{
         console.log("*result: "+result);
     });
 });
+
+app.post("/api/todolist/edit", (req,res)=>{
+    let sqlQuery = "UPDATE todolistdb.todolist SET id="+req.body.id
+                    +",author='"+req.body.author
+                    +"',title='"+req.body.title
+                    +"',description='"+req.body.description
+                    +"',due='"+req.body.due
+                    +"' WHERE id = " + req.body.id + ";";
+    console.log(sqlQuery);
+    connection.query(sqlQuery, (err,result)=>{
+        res.send(result);
+        console.log("*err: "+err);
+        console.log("*result: "+result);
+    })
+})
 
 app.post("/api/todolist/delete", (req,res)=>{
     /* 1) DELETE */

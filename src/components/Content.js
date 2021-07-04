@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { withStyles } from "@material-ui/core";
 import {
@@ -69,11 +69,11 @@ const Content = (props) => {
   const handleExpand = () => {
     setCardExpand(!cardExpand);
   };
+  const handleEdit = () =>{
+    props.edit(id);
+  };
   const handleDelete = () =>{
     props.delete(id);
-  }
-  const handleTest = () => {
-    alert('TEST');
   };
   const handleOptionMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -128,7 +128,7 @@ const Content = (props) => {
               open={Boolean(anchorEl)}
               onClose={handleOptionMenuClose}
             >
-              <MenuItem>Edit</MenuItem>
+              <MenuItem onClick={()=>handleEdit()}>Edit</MenuItem>
               <MenuItem onClick={()=>handleDelete()}>Delete</MenuItem>
             </Menu>
           </div>
@@ -158,7 +158,6 @@ const Content = (props) => {
         </CardContent>
       </Collapse>
       <CardActions style={{justifyContent:'flex-end'}}>
-        {console.log(id)}
         {participants.map(e=>{
           return(getParticipantIconAvatar(e));
         })}
