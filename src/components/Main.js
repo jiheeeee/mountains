@@ -4,8 +4,9 @@ import Content from "./Content";
 import store from '../store';
 import {
   withStyles, Container, Button, InputAdornment, TextField,
-  Fab, Dialog, DialogActions, DialogContent, DialogTitle,
+  Fab, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar,
 } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
 import EditIcon from '@material-ui/icons/Edit';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -27,6 +28,9 @@ const styles = theme => ({
     marginBottom: "30px",
   },
 });
+const Alert = React.forwardRef((props, ref) => 
+  <MuiAlert elevation={6} variant="filled" {...props} ref={ref} />
+);
 let idx = 0;
 
 const Main = (props) => {
@@ -39,7 +43,9 @@ const Main = (props) => {
   const [desctmp, setDesctmp] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [duetmp, setDuetmp] = useState(selectedDate.getFullYear()+'-'+(selectedDate.getMonth()+1)+'-'+selectedDate.getDate());
-  
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarContent, setSnackbarContent] = useState('');
+
   let baseUrl = "http://localhost:8000"
   useEffect(() => {
     resyncDB();
@@ -87,6 +93,9 @@ const Main = (props) => {
     ).then(()=>{
       resyncDB();
     });
+    setOpenSnackbar(true);
+    setTimeout(()=>{setOpenSnackbar(false)},1800);
+    setSnackbarContent('Created!');
   };
   const handleEditConfirm = (id) => {
     setOpenEditModal(false);
@@ -102,6 +111,9 @@ const Main = (props) => {
     ).then(()=>{
       resyncDB();
     });
+    setOpenSnackbar(true);
+    setTimeout(()=>{setOpenSnackbar(false)},1800);
+    setSnackbarContent('Modified!');
   };
   const handleEdit = (id) => {
     if(todoList[id] !== undefined){
@@ -132,6 +144,9 @@ const Main = (props) => {
         });
       }
     });
+    setOpenSnackbar(true);
+    setTimeout(()=>{setOpenSnackbar(false)},1800);
+    setSnackbarContent('Joined! :)');
   };
   const handleLeave = (id) => {
     axios.get(
@@ -146,6 +161,9 @@ const Main = (props) => {
         });
       }
     });
+    setOpenSnackbar(true);
+    setTimeout(()=>{setOpenSnackbar(false)},1800);
+    setSnackbarContent('Leaved! :(');
   };
   
   return(
@@ -259,6 +277,9 @@ const Main = (props) => {
           </DialogActions>
         </Dialog>
       </Container>
+      <Snackbar open={openSnackbar}>
+        <Alert severity="success">{snackbarContent}</Alert>
+      </Snackbar>
       <Fab
         className={classes.fab}
         color="primary"
