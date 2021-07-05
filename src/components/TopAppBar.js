@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import store from '../store';
 import { withStyles } from "@material-ui/core";
 import {
   Container, AppBar, Toolbar, Typography, Button, IconButton,
-  Avatar, Menu, MenuItem, Snackbar, Slide
+  Avatar, Menu, MenuItem, Snackbar, Slide, Card
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import MenuIcon from '@material-ui/icons/Menu';
 import jhahn from "../jhahn.jpg";
 import jhjeon from "../jhjeon.jpg";
 import ykpark from "../ykpark.jpg";
+import { CalendarOutlined } from '@ant-design/icons';
+import CalendarAntd from "./CalendarAntd";
 
 const styles = theme => ({
   root:{
@@ -20,6 +22,7 @@ const styles = theme => ({
   },
   title: {
     flexGrow: 1,
+    color: 'white',
   },
   snackbar:{
     position: 'absolute',
@@ -28,6 +31,12 @@ const styles = theme => ({
     width: '100%',
     marginRight: '1000px',
   },
+  hide: {
+    display: "none",
+  },
+  drawer: {
+    margin: 10,
+  }
 });
 const Alert = React.forwardRef((props, ref) => 
   <MuiAlert elevation={6} variant="filled" {...props} ref={ref} />
@@ -42,6 +51,7 @@ const TopAppBar = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [loginSnackbar, setLoginSnackbar] = useState(true);
+  const [visible, setvisible] = useState(false);
   
   const handleUserMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -58,6 +68,14 @@ const TopAppBar = (props) => {
     setAnchorEl(null);
     setOpenSnackbar(true);
     setTimeout(()=>{setOpenSnackbar(false)},3000);
+  }
+  const showDrawer = () => {
+    if (visible === true) {
+      setvisible(false);
+    }
+    else {
+      setvisible(true);
+    }
   }
   const getUserAvatar = (user) => {
     switch(user){
@@ -93,6 +111,7 @@ const TopAppBar = (props) => {
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             할 일이 태산
+            <CalendarOutlined onClick={showDrawer} style={{ padding: 20 }} />
           </Typography>
           <Button onClick={handleUserMenuOpen}>
             {getUserAvatar(user)}
@@ -124,6 +143,9 @@ const TopAppBar = (props) => {
             <Alert severity="info">{getLoginMessage(user)}</Alert>
           </Snackbar>
         </Toolbar>
+        <Card className={visible ? classes.drawer : classes.hide}>
+          <CalendarAntd />
+        </Card>
       </AppBar>
     </Container>
   );
